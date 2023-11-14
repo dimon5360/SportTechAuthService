@@ -1,4 +1,4 @@
-module main/storage
+module app/main
 
 go 1.21.3
 

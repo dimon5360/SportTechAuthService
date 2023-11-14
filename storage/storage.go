@@ -1,10 +1,10 @@
 package storage
 
 import (
+	"app/main/models"
 	"database/sql"
 	"fmt"
 	"log"
-	"main/storage/models"
 
 	_ "github.com/lib/pq"
 )

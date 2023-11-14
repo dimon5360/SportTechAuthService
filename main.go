@@ -1,9 +1,9 @@
 package main
 
 import (
+	"app/main/storage"
+	"app/main/utils"
 	"fmt"
-	"main/storage/storage"
-	"main/storage/utils"
 )
 
 /// TODO:
