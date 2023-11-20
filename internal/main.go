@@ -6,7 +6,7 @@ import (
 	"log"
 	"net"
 
-	proto "github.com/dimon5360/SportTechProtos/gen/go"
+	proto "github.com/dimon5360/SportTechProtos/gen/go/proto"
 	"google.golang.org/grpc"
 )
 

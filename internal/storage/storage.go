@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"log"
 
-	proto "github.com/dimon5360/SportTechProtos/gen/go"
+	proto "github.com/dimon5360/SportTechProtos/gen/go/proto"
 	_ "github.com/lib/pq"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -32,9 +32,9 @@ func (s *AuthUsersService) Init(conn_string string) {
 	s.db = db
 }
 
-func (s *AuthUsersService) GetUserById(uuid string) models.User {
+func (s *AuthUsersService) GetUserById(uuid uint64) models.User {
 
-	rows, err := s.db.Query(fmt.Sprintf("select * from users where id = %s;", uuid))
+	rows, err := s.db.Query(fmt.Sprintf("select * from users where id = %d;", uuid))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,7 +59,7 @@ func (s *AuthUsersService) GetUser(ctx context.Context, req *proto.GetUserReques
 	log.Print(user)
 
 	return &proto.UserInfoResponse{
-		Id:        fmt.Sprintf("%d", user.Id),
+		Id:        user.Id,
 		Username:  user.Username,
 		Email:     user.Email,
 		CreatedAt: timestamppb.New(user.Created_at),
@@ -97,7 +97,7 @@ func (s *AuthUsersService) AuthUser(ctx context.Context, req *proto.AuthUserRequ
 
 	if user.Email == req.Email && user.Password == req.Password {
 		return &proto.UserInfoResponse{
-			Id:        fmt.Sprintf("%d", user.Id),
+			Id:        user.Id,
 			Username:  user.Username,
 			Email:     user.Email,
 			CreatedAt: timestamppb.New(user.Created_at),
