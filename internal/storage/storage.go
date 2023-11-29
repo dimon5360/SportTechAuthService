@@ -107,3 +107,31 @@ func (s *AuthUsersService) AuthUser(ctx context.Context, req *proto.AuthUserRequ
 
 	return &proto.UserInfoResponse{}, fmt.Errorf("%s", "Invalid email or password")
 }
+
+func (s *AuthUsersService) CreateUser(ctx context.Context, req *proto.CreateUserRequst) (*proto.UserInfoResponse, error) {
+
+	log.Print(req.Username, req.Email, req.Password)
+
+	query := fmt.Sprintf("insert into users (username, email, password) values ('%s', '%s', '%s') ON conflict DO NOTHING;",
+		req.Username,
+		req.Email,
+		req.Password)
+
+	res, err := s.db.Exec(query)
+	if err != nil {
+		log.Print(err)
+		return &proto.UserInfoResponse{}, err
+	}
+
+	n, err := res.RowsAffected()
+	if err != nil {
+		log.Print(err)
+		return &proto.UserInfoResponse{}, err
+	}
+
+	if n == 0 {
+		return &proto.UserInfoResponse{}, fmt.Errorf("user already exists")
+	}
+
+	return &proto.UserInfoResponse{}, err
+}
