@@ -69,7 +69,7 @@ func (s *AuthUsersService) GetUser(ctx context.Context, req *proto.GetUserReques
 
 func (s *AuthUsersService) AuthUser(ctx context.Context, req *proto.AuthUserRequest) (*proto.UserInfoResponse, error) {
 
-	log.Print(req.Email + req.Password)
+	log.Print(req.Email, req.Password)
 
 	rows, err := s.db.Query(fmt.Sprintf("select * from users where email = '%s';", req.Email))
 	if err != nil {
@@ -95,7 +95,7 @@ func (s *AuthUsersService) AuthUser(ctx context.Context, req *proto.AuthUserRequ
 		return &proto.UserInfoResponse{}, fmt.Errorf("%s", "User not found")
 	}
 
-	if user.Email == req.Email && user.Password == req.Password {
+	if user.ValidateCredentials(req) {
 		return &proto.UserInfoResponse{
 			Id:        user.Id,
 			Username:  user.Username,
