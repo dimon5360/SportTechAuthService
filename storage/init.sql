@@ -11,5 +11,3 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE INDEX ON users (username);
 CREATE INDEX ON users (email);
-
-INSERT INTO users (username, password, email) VALUES ('defaultuser', 'defaultuser123', 'defaultuser@gmail.com');

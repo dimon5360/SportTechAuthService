@@ -10,10 +10,6 @@ import (
 	"google.golang.org/grpc"
 )
 
-/// TODO:
-/// 1. handle request with dbms
-/// 2. transfer response
-
 func main() {
 
 	env := utils.Init()
@@ -32,6 +28,6 @@ func main() {
 	var opts []grpc.ServerOption
 
 	grpcServer := grpc.NewServer(opts...)
-	proto.RegisterAuthUsersServiceServer(grpcServer, &service)
+	proto.RegisterAuthUsersServiceServer(grpcServer, service)
 	grpcServer.Serve(lis)
 }
