@@ -21,9 +21,9 @@ func CreateService() *AuthUsersService {
 	return &AuthUsersService{}
 }
 
-func (s *AuthUsersService) Init(conn_string string) {
+func (s *AuthUsersService) Init(connString string) {
 
-	db, err := sql.Open("postgres", conn_string)
+	db, err := sql.Open("postgres", connString)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -71,7 +71,7 @@ func (s *AuthUsersService) AuthUser(ctx context.Context, req *proto.AuthUserRequ
 	}, nil
 }
 
-func (s *AuthUsersService) CreateUser(ctx context.Context,req *proto.CreateUserRequst) (*proto.UserInfoResponse, error) {
-	uuid, err := s.AddUserToDatabase(req.Username, req.Email, req.Password)
-	return &proto.UserInfoResponse{Id: uuid}, err
+func (s *AuthUsersService) CreateUser(ctx context.Context, req *proto.CreateUserRequst) (*proto.UserInfoResponse, error) {
+	user, err := s.AddUserToDatabase(req.Username, req.Email, req.Password)
+	return &proto.UserInfoResponse{Id: user.Id, Username: user.Username}, err
 }
