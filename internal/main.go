@@ -10,18 +10,24 @@ import (
 	"google.golang.org/grpc"
 )
 
+const (
+	configPath  = "/home/dmitry/Projects/SportTechService/SportTechDockerConfig/"
+	serviceEnv  = "../config/service.env"
+	postgresEnv = configPath + "postgres.env"
+	redisEnv    = configPath + "redis.env"
+)
+
 func main() {
 
-	env := utils.Init()
-	env.Load("../config/app.env")
-	env.Load("../config/db.env")
+	env := utils.Env()
+	env.Load(serviceEnv, postgresEnv, redisEnv)
 
-	log.Println("Auth service v." + env.Value("VERSION_APP"))
+	log.Println("SportTech auth service v." + env.Value("SERVICE_VERSION"))
 
 	service := storage.CreateService()
-	service.Init(env.Value("CONNECTION_STRING") + "?sslmode=disable")
+	service.Init()
 
-	lis, err := net.Listen("tcp", "localhost:40402")
+	lis, err := net.Listen("tcp", env.Value("AUTH_GRPC_HOST"))
 	if err != nil {
 		panic(err)
 	}

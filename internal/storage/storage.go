@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"app/main/utils"
 	"context"
 	"database/sql"
 	"fmt"
@@ -21,9 +22,20 @@ func CreateService() *AuthUsersService {
 	return &AuthUsersService{}
 }
 
-func (s *AuthUsersService) Init(connString string) {
+func (s *AuthUsersService) Init() {
 
-	db, err := sql.Open("postgres", connString)
+	var connString string
+
+	env := utils.Env()
+
+	connString = fmt.Sprintf("postgresql://%s:%s@%s/%s",
+		env.Value("POSTGRES_USER"),
+		env.Value("POSTGRES_PASSWORD"),
+		env.Value("POSTGRES_HOST"),
+		env.Value("POSTGRES_DB"),
+	)
+
+	db, err := sql.Open("postgres", connString+"?sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
