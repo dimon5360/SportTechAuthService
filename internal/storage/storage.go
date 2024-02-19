@@ -56,7 +56,6 @@ func (s *AuthUsersService) GetUser(ctx context.Context, req *proto.GetUserReques
 
 	return &proto.UserInfoResponse{
 		Id:        user.Id,
-		Username:  user.Username,
 		Email:     user.Email,
 		CreatedAt: timestamppb.New(user.Created_at),
 		UpdatedAt: timestamppb.New(user.Updated_at),
@@ -76,7 +75,6 @@ func (s *AuthUsersService) AuthUser(ctx context.Context, req *proto.AuthUserRequ
 
 	return &proto.UserInfoResponse{
 		Id:        user.Id,
-		Username:  user.Username,
 		Email:     user.Email,
 		CreatedAt: timestamppb.New(user.Created_at),
 		UpdatedAt: timestamppb.New(user.Updated_at),
@@ -84,6 +82,6 @@ func (s *AuthUsersService) AuthUser(ctx context.Context, req *proto.AuthUserRequ
 }
 
 func (s *AuthUsersService) CreateUser(ctx context.Context, req *proto.CreateUserRequst) (*proto.UserInfoResponse, error) {
-	user, err := s.AddUserToDatabase(req.Username, req.Email, req.Password)
-	return &proto.UserInfoResponse{Id: user.Id, Username: user.Username}, err
+	user, err := s.AddUserToDatabase(req.Email, req.Password)
+	return &proto.UserInfoResponse{Id: user.Id}, err
 }
