@@ -1,6 +1,6 @@
 module app/main
 
-go 1.21.3
+go 1.22.0
 
 require (
 	github.com/lib/pq v1.10.9
