@@ -1,8 +1,8 @@
 package main
 
 import (
-	"app/main/storage"
-	"app/main/utils"
+	"app/main/internal/storage"
+	"app/main/internal/utils"
 	"log"
 	"net"
 
@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	configPath  = "/home/dmitry/Projects/SportTechService/SportTechDockerConfig/"
-	serviceEnv  = "../config/service.env"
+	configPath  = "../SportTechDockerConfig/"
+	serviceEnv  = ".env"
 	postgresEnv = configPath + "postgres.env"
 	redisEnv    = configPath + "redis.env"
 )

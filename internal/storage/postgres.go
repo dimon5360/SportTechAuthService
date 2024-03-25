@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"app/main/models"
+	"app/main/internal/models"
 	"fmt"
 	"log"
 
