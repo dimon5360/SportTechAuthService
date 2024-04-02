@@ -1,13 +1,8 @@
 package main
 
 import (
-	"app/main/internal/storage"
-	"app/main/internal/utils"
+	"app/main/internal/app"
 	"log"
-	"net"
-
-	proto "github.com/dimon5360/SportTechProtos/gen/go/proto"
-	"google.golang.org/grpc"
 )
 
 const (
@@ -19,21 +14,13 @@ const (
 
 func main() {
 
-	env := utils.Env()
-	env.Load(serviceEnv, postgresEnv, redisEnv)
+	a := app.New()
 
-	log.Println("SportTech auth service v." + env.Value("SERVICE_VERSION"))
-
-	service := storage.CreateService()
-	service.Init()
-
-	lis, err := net.Listen("tcp", env.Value("AUTH_GRPC_HOST"))
-	if err != nil {
-		panic(err)
+	if err := a.Init(); err != nil {
+		log.Fatal(err)
 	}
-	var opts []grpc.ServerOption
 
-	grpcServer := grpc.NewServer(opts...)
-	proto.RegisterAuthUsersServiceServer(grpcServer, service)
-	grpcServer.Serve(lis)
+	if err := a.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
