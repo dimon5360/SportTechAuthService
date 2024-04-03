@@ -1,6 +1,8 @@
 package app
 
 import (
+	tokenRepository "app/main/internal/repository/token"
+	userRepository "app/main/internal/repository/user"
 	"app/main/internal/service"
 	authService "app/main/internal/service/auth"
 	"fmt"
@@ -27,12 +29,7 @@ func (p *provider) Init() (service.Interface, error) {
 		return nil, err
 	}
 
-	version := os.Getenv(serviceVersionKey)
-	if len(version) == 0 {
-		return nil, fmt.Errorf("service version not found")
-	}
-
-	fmt.Println("SportTech auth service v." + version)
+	fmt.Println("SportTech auth service v." + os.Getenv(serviceVersionKey))
 	log.Println("provider initialized")
 
 	return p.initAuthService()
@@ -41,7 +38,7 @@ func (p *provider) Init() (service.Interface, error) {
 
 func (p *provider) initAuthService() (service.Interface, error) {
 
-	service := authService.New()
+	service := authService.New(userRepository.New(), tokenRepository.New())
 
 	if err := service.Init(); err != nil {
 		return nil, err

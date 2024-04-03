@@ -2,8 +2,8 @@ package repository
 
 type Interface interface {
 	Init() error
-	Add(interface{}) (interface{}, error)
-	Get(interface{}) (interface{}, error)
+	Create(interface{}) (interface{}, error)
+	Read(interface{}) (interface{}, error)
 	Update(interface{}) (interface{}, error)
 	Delete(interface{}) error
 }

@@ -7,3 +7,7 @@ import (
 func Init() error {
 	return gt.Load()
 }
+
+func Load(filename ...string) error {
+	return gt.Load(filename...)
+}
