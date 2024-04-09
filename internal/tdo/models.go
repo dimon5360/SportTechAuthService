@@ -1,8 +1,8 @@
-package repository
+package tdo
 
 import "time"
 
-type PostgresDtoUser struct {
+type PostgresUser struct {
 	Id         uint64
 	Email      string
 	Password   string

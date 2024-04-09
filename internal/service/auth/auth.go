@@ -63,9 +63,17 @@ func (s *grpcService) LoginUser(ctx context.Context, req *proto.LoginUserRequest
 	fmt.Println(req)
 
 	// 1. validate user credentials from postgres
-	// 2. generate tokens and store in redis
+	// 2. check profile id, if it isn't existed, redirect to api/v1/profile/create
+	// 3. generate tokens and store in redis
 
-	return nil, nil
+	return &proto.LoginUserResponse{
+		Id:           1,
+		AccessToken:  &proto.Token{Value: "test-access-token", Age: 10},
+		RefreshToken: &proto.Token{Value: "test-refresh-token", Age: 10},
+		ProfileId:    0,
+		IsValidated:  false,
+		Error:        proto.AuthError_OK,
+	}, nil
 }
 
 func (s *grpcService) RegisterUser(ctx context.Context, req *proto.RegisterUserRequest) (*proto.RegisterUserResponse, error) {
