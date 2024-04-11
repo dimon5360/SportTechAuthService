@@ -1,6 +1,7 @@
 package app
 
 import (
+	"app/main/internal/endpoint"
 	tokenRepository "app/main/internal/repository/token"
 	userRepository "app/main/internal/repository/user"
 	"app/main/internal/service"
@@ -33,12 +34,21 @@ func (p *provider) Init() (service.Interface, error) {
 	log.Println("provider initialized")
 
 	return p.initAuthService()
-
 }
 
 func (p *provider) initAuthService() (service.Interface, error) {
 
-	service := authService.New(userRepository.New(), tokenRepository.New())
+	userRepo := userRepository.New()
+	if err := userRepo.Init(); err != nil {
+		log.Fatal(err.Error())
+	}
+
+	tokenRepo := tokenRepository.New()
+	if err := tokenRepo.Init(); err != nil {
+		log.Fatal(err.Error())
+	}
+
+	service := authService.New(endpoint.New(userRepo, tokenRepo))
 
 	if err := service.Init(); err != nil {
 		return nil, err

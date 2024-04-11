@@ -21,7 +21,7 @@ type tokenRepository struct {
 	cli *redis.Client
 }
 
-func New() repository.Interface {
+func New() repository.TokenRepositoryInterface {
 	return &tokenRepository{}
 }
 
