@@ -44,18 +44,10 @@ func (r *tokenRepository) Init() error {
 	return fmt.Errorf("can't create redis client")
 }
 
-func (r *tokenRepository) Create(interface{}) (interface{}, error) {
+func (r *tokenRepository) Refresh(interface{}) (interface{}, error) {
 	return nil, nil
 }
 
-func (r *tokenRepository) Read(interface{}) (interface{}, error) {
+func (r *tokenRepository) Validate(interface{}) (interface{}, error) {
 	return nil, nil
-}
-
-func (r *tokenRepository) Update(interface{}) (interface{}, error) {
-	return nil, nil
-}
-
-func (r *tokenRepository) Delete(interface{}) error {
-	return nil
 }

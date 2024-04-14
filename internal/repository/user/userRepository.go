@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"app/main/internal/dto"
+	"app/main/internal/dto/models"
 	"app/main/internal/repository"
 	"app/main/pkg/env"
 	"database/sql"
@@ -59,11 +59,11 @@ func (r *userRepository) Init() error {
 	return err
 }
 
-func (r *userRepository) Create(interface{}) (interface{}, error) {
+func (r *userRepository) Create(req *models.RegisterPostgresRequest) (*models.RegisterPostgresResponse, error) {
 	return nil, fmt.Errorf(methodNotImplemented)
 }
 
-func (r *userRepository) Read(req *dto.LoginPostgresRequest) (*dto.LoginPostgresResponse, error) {
+func (r *userRepository) Read(req *models.LoginPostgresRequest) (*models.LoginPostgresResponse, error) {
 	return nil, fmt.Errorf(methodNotImplemented)
 }
 

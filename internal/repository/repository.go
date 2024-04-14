@@ -1,21 +1,19 @@
 package repository
 
 import (
-	"app/main/internal/dto"
+	"app/main/internal/dto/models"
 )
 
 type UserRepositoryInterface interface {
 	Init() error
-	Create(interface{}) (interface{}, error)
-	Read(req *dto.LoginPostgresRequest) (*dto.LoginPostgresResponse, error)
+	Create(req *models.RegisterPostgresRequest) (*models.RegisterPostgresResponse, error)
+	Read(req *models.LoginPostgresRequest) (*models.LoginPostgresResponse, error)
 	Update(interface{}) (interface{}, error)
 	Delete(interface{}) error
 }
 
 type TokenRepositoryInterface interface {
 	Init() error
-	Create(interface{}) (interface{}, error)
-	Read(interface{}) (interface{}, error)
-	Update(interface{}) (interface{}, error)
-	Delete(interface{}) error
+	Refresh(interface{}) (interface{}, error)
+	Validate(interface{}) (interface{}, error)
 }

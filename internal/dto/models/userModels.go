@@ -1,4 +1,4 @@
-package dto
+package models
 
 import (
 	"time"
@@ -14,6 +14,23 @@ type LoginPostgresRequest struct {
 }
 
 type LoginPostgresResponse struct {
+	Id          uint64
+	Email       string
+	Password    string
+	Role        string
+	ProfileId   uint64
+	IsValidated bool
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type RegisterPostgresRequest struct {
+	Email    string
+	Password string
+	Role     string
+}
+
+type RegisterPostgresResponse struct {
 	Id          uint64
 	Email       string
 	Password    string

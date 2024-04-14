@@ -1,9 +1,10 @@
 package endpoint
 
 import (
-	"app/main/internal/dto"
+	"app/main/internal/dto/models"
 	"app/main/internal/repository"
 	"context"
+	"fmt"
 	"log"
 	"os"
 	proto "proto/go"
@@ -33,9 +34,9 @@ func (s *GrpcEndpoint) LoginUser(ctx context.Context, req *proto.LoginUserReques
 	}
 
 	response, err := s.userReposoitory.Read(
-		&dto.LoginPostgresRequest{
+		&models.LoginPostgresRequest{
 			Email: req.Email,
-			Role:  dto.UserRole,
+			Role:  models.UserRole,
 		})
 
 	if err != nil {
@@ -68,8 +69,33 @@ func (s *GrpcEndpoint) LoginUser(ctx context.Context, req *proto.LoginUserReques
 
 func (s *GrpcEndpoint) RegisterUser(ctx context.Context, req *proto.RegisterUserRequest) (*proto.RegisterUserResponse, error) {
 
-	// 1. create new user in postgres
-	return nil, nil
+	log.Println("user register request")
+	if s.userReposoitory == nil {
+		log.Fatal("user repository isn't initialized")
+	}
+
+	salt := os.Getenv("PASSWORD_HASH_SALT")
+	_, err := HashPassword(req.Password, salt)
+	if err != nil {
+		return nil, fmt.Errorf("hashing password failed")
+	}
+
+	_, err = s.userReposoitory.Create(
+		&models.RegisterPostgresRequest{
+			Email:    req.Email,
+			Password: req.Password,
+			Role:     models.UserRole,
+		})
+
+	if err != nil {
+		return &proto.RegisterUserResponse{
+			Error: proto.AuthError_NOT_FOUND,
+		}, err
+	}
+
+	return &proto.RegisterUserResponse{
+		Error: proto.AuthError_OK,
+	}, nil
 }
 
 func (s *GrpcEndpoint) RefreshToken(ctx context.Context, req *proto.RefreshTokenRequest) (*proto.RefreshTokenResponse, error) {
