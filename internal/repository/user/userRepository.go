@@ -59,12 +59,50 @@ func (r *userRepository) Init() error {
 	return err
 }
 
-func (r *userRepository) Create(req *models.RegisterPostgresRequest) (*models.RegisterPostgresResponse, error) {
-	return nil, fmt.Errorf(methodNotImplemented)
+func (r *userRepository) Create(
+	req *models.RegisterPostgresRequestModel,
+) (*models.RegisterPostgresResponseModel, error) {
+
+	template := "INSERT into users (email, password, role, is_validated)" +
+		"values ('%s', '%s', '%s', %t) ON conflict DO NOTHING RETURNING *;"
+	sql := fmt.Sprintf(template, req.Email, req.Password, req.Role, false)
+
+	rows := r.cli.QueryRow(sql)
+	if err := rows.Err(); err != nil {
+		log.Print(err)
+		return &models.RegisterPostgresResponseModel{}, err
+	}
+
+	var model models.RegisterPostgresResponseModel
+	// err := rows.Scan(&model.Id, &model.Email, &model.Password, &model.Role, &model.ProfileId, &model.IsValidated, &model.CreatedAt, &model.UpdatedAt)
+	err := rows.Scan(&model)
+	if err != nil {
+		log.Print(err)
+		return &models.RegisterPostgresResponseModel{}, err
+	}
+	return &model, nil
 }
 
-func (r *userRepository) Read(req *models.LoginPostgresRequest) (*models.LoginPostgresResponse, error) {
-	return nil, fmt.Errorf(methodNotImplemented)
+func (r *userRepository) Read(
+	req *models.LoginPostgresRequestModel,
+) (*models.LoginPostgresResponseModel, error) {
+
+	template := "SELECT * users WHERE email=%s AND role=%s;"
+	sql := fmt.Sprintf(template, req.Email, req.Role)
+
+	rows := r.cli.QueryRow(sql)
+	if err := rows.Err(); err != nil {
+		log.Print(err)
+		return &models.LoginPostgresResponseModel{}, err
+	}
+
+	var model models.LoginPostgresResponseModel
+	err := rows.Scan(&model)
+	if err != nil {
+		log.Print(err)
+		return &models.LoginPostgresResponseModel{}, err
+	}
+	return &model, nil
 }
 
 func (r *userRepository) Update(interface{}) (interface{}, error) {

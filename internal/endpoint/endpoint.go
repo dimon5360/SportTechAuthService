@@ -26,19 +26,17 @@ func New(userReposoitory repository.UserRepositoryInterface,
 	}
 }
 
-func (s *GrpcEndpoint) LoginUser(ctx context.Context, req *proto.LoginUserRequest) (*proto.LoginUserResponse, error) {
+func (s *GrpcEndpoint) LoginUser(
+	ctx context.Context, req *proto.LoginUserRequest,
+) (*proto.LoginUserResponse, error) {
 
 	log.Println("user login procedure")
 	if s.userReposoitory == nil {
 		log.Fatal("user repository isn't initialized")
 	}
 
-	response, err := s.userReposoitory.Read(
-		&models.LoginPostgresRequest{
-			Email: req.Email,
-			Role:  models.UserRole,
-		})
-
+	user, err := s.userReposoitory.Read(
+		models.ConvertRequestLoginModel(req, models.UserRole))
 	if err != nil {
 		return nil, err
 	}
@@ -46,28 +44,27 @@ func (s *GrpcEndpoint) LoginUser(ctx context.Context, req *proto.LoginUserReques
 	salt := os.Getenv("PASSWORD_HASH_SALT")
 	hash, err := HashPassword(req.Password, salt)
 	if err != nil {
-		return &proto.LoginUserResponse{
-			Error: proto.AuthError_INVALID_CREDENTIALS,
-		}, nil
+		return nil, err
 	}
 
-	if isValid := ValidatePassword(response.Password, hash); !isValid {
-		return &proto.LoginUserResponse{
-			Error: proto.AuthError_INVALID_CREDENTIALS,
-		}, nil
+	if isValid := ValidatePassword(user.Password, hash); !isValid {
+		return nil, fmt.Errorf("invalid creadentials")
 	}
 
-	return &proto.LoginUserResponse{
-		Id:           1,
-		AccessToken:  &proto.Token{},
-		RefreshToken: &proto.Token{},
-		ProfileId:    1,
-		IsValidated:  false,
-		Error:        proto.AuthError_OK,
-	}, nil
+	tokens, err := s.tokenRepository.GenerateTokens(
+		&models.GenerateTokensRequestModel{
+			UserId: user.Id,
+		})
+
+	if err != nil {
+		return nil, err
+	}
+	return models.ConvertResponseLoginModel(user, tokens), nil
 }
 
-func (s *GrpcEndpoint) RegisterUser(ctx context.Context, req *proto.RegisterUserRequest) (*proto.RegisterUserResponse, error) {
+func (s *GrpcEndpoint) RegisterUser(
+	ctx context.Context, req *proto.RegisterUserRequest,
+) (*proto.RegisterUserResponse, error) {
 
 	log.Println("user register request")
 	if s.userReposoitory == nil {
@@ -81,33 +78,41 @@ func (s *GrpcEndpoint) RegisterUser(ctx context.Context, req *proto.RegisterUser
 	}
 
 	_, err = s.userReposoitory.Create(
-		&models.RegisterPostgresRequest{
-			Email:    req.Email,
-			Password: req.Password,
-			Role:     models.UserRole,
-		})
-
+		models.ConvertRequestRegisterModel(req, models.UserRole))
 	if err != nil {
-		return &proto.RegisterUserResponse{
-			Error: proto.AuthError_NOT_FOUND,
-		}, err
+		return nil, err
 	}
 
-	return &proto.RegisterUserResponse{
-		Error: proto.AuthError_OK,
-	}, nil
+	return models.ConvertResponseRegisterModel("success"), nil
 }
 
-func (s *GrpcEndpoint) RefreshToken(ctx context.Context, req *proto.RefreshTokenRequest) (*proto.RefreshTokenResponse, error) {
+func (s *GrpcEndpoint) RefreshToken(
+	ctx context.Context, req *proto.RefreshTokenRequest,
+) (*proto.RefreshTokenResponse, error) {
 
-	// 1. validate user refresh token from redis
-	// 2. generate new tokens and store in redis
-	return nil, nil
+	log.Println("refresh token request")
+
+	model := models.ConvertRequestRefreshTokenModel(req)
+	err := s.tokenRepository.ValidateRefreshToken(model)
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := s.tokenRepository.RefreshTokens(model)
+	if err != nil {
+		return nil, err
+	}
+
+	return models.ConvertResponseRefreshTokenModel(response), nil
 }
 
-func (s *GrpcEndpoint) ValidateToken(ctx context.Context, req *proto.ValidateTokenRequest) (*proto.ValidateTokenResponse, error) {
+func (s *GrpcEndpoint) ValidateToken(
+	ctx context.Context, req *proto.ValidateTokenRequest,
+) (*proto.ValidateTokenResponse, error) {
 
-	// 1. read user access token from redis
-	// 2. check token is valid
-	return nil, nil
+	log.Println("access token validating request")
+
+	model := models.ConvertRequestValidateTokenModel(req)
+	err := s.tokenRepository.ValidateAccessToken(model)
+	return models.ConvertResponseValidateTokenModel(err), err
 }

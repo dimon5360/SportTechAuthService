@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"app/main/internal/dto/models"
 	"app/main/internal/repository"
 	"app/main/pkg/env"
 	"fmt"
@@ -44,10 +45,26 @@ func (r *tokenRepository) Init() error {
 	return fmt.Errorf("can't create redis client")
 }
 
-func (r *tokenRepository) Refresh(interface{}) (interface{}, error) {
-	return nil, nil
+func (r *tokenRepository) RefreshTokens(
+	req *models.RefreshTokenRequestModel,
+) (*models.RefreshTokenResponseModel, error) {
+	return nil, fmt.Errorf("method isn't implemented")
 }
 
-func (r *tokenRepository) Validate(interface{}) (interface{}, error) {
-	return nil, nil
+func (r *tokenRepository) ValidateRefreshToken(
+	req *models.RefreshTokenRequestModel,
+) error {
+	return fmt.Errorf("method isn't implemented")
+}
+
+func (r *tokenRepository) ValidateAccessToken(
+	req *models.AccessTokenRequestModel,
+) error {
+	return fmt.Errorf("method isn't implemented")
+}
+
+func (r *tokenRepository) GenerateTokens(
+	req *models.GenerateTokensRequestModel,
+) (*models.GenerateTokensResponseModel, error) {
+	return nil, fmt.Errorf("method isn't implemented")
 }

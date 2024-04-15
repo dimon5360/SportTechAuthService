@@ -1,6 +1,7 @@
 package models
 
 import (
+	proto "proto/go"
 	"time"
 )
 
@@ -8,12 +9,12 @@ const (
 	UserRole string = "User"
 )
 
-type LoginPostgresRequest struct {
+type LoginPostgresRequestModel struct {
 	Email string
 	Role  string
 }
 
-type LoginPostgresResponse struct {
+type LoginPostgresResponseModel struct {
 	Id          uint64
 	Email       string
 	Password    string
@@ -24,13 +25,37 @@ type LoginPostgresResponse struct {
 	UpdatedAt   time.Time
 }
 
-type RegisterPostgresRequest struct {
+func ConvertRequestLoginModel(
+	req *proto.LoginUserRequest,
+	role string,
+) *LoginPostgresRequestModel {
+	return &LoginPostgresRequestModel{
+		Email: req.Email,
+		Role:  role,
+	}
+}
+
+func ConvertResponseLoginModel(
+	user *LoginPostgresResponseModel,
+	tokens *GenerateTokensResponseModel,
+) *proto.LoginUserResponse {
+	return &proto.LoginUserResponse{
+		Id:           user.Id,
+		AccessToken:  ConvertTokensModel(&tokens.AccessToken),
+		RefreshToken: ConvertTokensModel(&tokens.RefreshToken),
+		ProfileId:    user.ProfileId,
+		IsValidated:  user.IsValidated,
+		Error:        "success",
+	}
+}
+
+type RegisterPostgresRequestModel struct {
 	Email    string
 	Password string
 	Role     string
 }
 
-type RegisterPostgresResponse struct {
+type RegisterPostgresResponseModel struct {
 	Id          uint64
 	Email       string
 	Password    string
@@ -39,4 +64,21 @@ type RegisterPostgresResponse struct {
 	IsValidated bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+}
+
+func ConvertRequestRegisterModel(
+	req *proto.RegisterUserRequest,
+	role string,
+) *RegisterPostgresRequestModel {
+	return &RegisterPostgresRequestModel{
+		Email:    req.Email,
+		Password: req.Password,
+		Role:     role,
+	}
+}
+
+func ConvertResponseRegisterModel(result string) *proto.RegisterUserResponse {
+	return &proto.RegisterUserResponse{
+		Error: result,
+	}
 }
