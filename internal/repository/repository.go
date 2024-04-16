@@ -6,10 +6,15 @@ import (
 
 type UserRepositoryInterface interface {
 	Init() error
-	Create(req *models.RegisterPostgresRequestModel) (*models.RegisterPostgresResponseModel, error)
-	Read(req *models.LoginPostgresRequestModel) (*models.LoginPostgresResponseModel, error)
-	Update(interface{}) (interface{}, error)
-	Delete(interface{}) error
+	CreateUser(req *models.RegisterPostgresRequestModel) (*models.RegisterPostgresResponseModel, error)
+	GetUser(req *models.LoginPostgresRequestModel) (*models.LoginPostgresResponseModel, error)
+	UpdateUser(interface{}) (interface{}, error)
+	DeleteUser(interface{}) error
+
+	CreateProfile(interface{}) (interface{}, error)
+	GetProfile(interface{}) (interface{}, error)
+	UpdateProfile(interface{}) (interface{}, error)
+	DeleteProfile(interface{}) error
 }
 
 type TokenRepositoryInterface interface {

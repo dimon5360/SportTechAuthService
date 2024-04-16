@@ -59,7 +59,7 @@ func (r *userRepository) Init() error {
 	return err
 }
 
-func (r *userRepository) Create(
+func (r *userRepository) CreateUser(
 	req *models.RegisterPostgresRequestModel,
 ) (*models.RegisterPostgresResponseModel, error) {
 
@@ -83,7 +83,7 @@ func (r *userRepository) Create(
 	return &model, nil
 }
 
-func (r *userRepository) Read(
+func (r *userRepository) GetUser(
 	req *models.LoginPostgresRequestModel,
 ) (*models.LoginPostgresResponseModel, error) {
 
@@ -105,10 +105,26 @@ func (r *userRepository) Read(
 	return &model, nil
 }
 
-func (r *userRepository) Update(interface{}) (interface{}, error) {
+func (r *userRepository) UpdateUser(interface{}) (interface{}, error) {
 	return nil, fmt.Errorf(methodNotImplemented)
 }
 
-func (r *userRepository) Delete(interface{}) error {
+func (r *userRepository) DeleteUser(interface{}) error {
+	return fmt.Errorf(methodNotImplemented)
+}
+
+func (r *userRepository) CreateProfile(interface{}) (interface{}, error) {
+	return nil, fmt.Errorf(methodNotImplemented)
+}
+
+func (r *userRepository) GetProfile(interface{}) (interface{}, error) {
+	return nil, fmt.Errorf(methodNotImplemented)
+}
+
+func (r *userRepository) UpdateProfile(interface{}) (interface{}, error) {
+	return nil, fmt.Errorf(methodNotImplemented)
+}
+
+func (r *userRepository) DeleteProfile(interface{}) error {
 	return fmt.Errorf(methodNotImplemented)
 }

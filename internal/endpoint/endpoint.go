@@ -10,6 +10,8 @@ import (
 	proto "proto/go"
 )
 
+const methodNotImplemented string = "method not implemented"
+
 type GrpcEndpoint struct {
 	proto.UnimplementedAuthServiceServer
 
@@ -35,7 +37,7 @@ func (s *GrpcEndpoint) LoginUser(
 		log.Fatal("user repository isn't initialized")
 	}
 
-	user, err := s.userReposoitory.Read(
+	user, err := s.userReposoitory.GetUser(
 		models.ConvertRequestLoginModel(req, models.UserRole))
 	if err != nil {
 		return nil, err
@@ -77,7 +79,7 @@ func (s *GrpcEndpoint) RegisterUser(
 		return nil, fmt.Errorf("hashing password failed")
 	}
 
-	_, err = s.userReposoitory.Create(
+	_, err = s.userReposoitory.CreateUser(
 		models.ConvertRequestRegisterModel(req, models.UserRole))
 	if err != nil {
 		return nil, err
@@ -115,4 +117,28 @@ func (s *GrpcEndpoint) ValidateToken(
 	model := models.ConvertRequestValidateTokenModel(req)
 	err := s.tokenRepository.ValidateAccessToken(model)
 	return models.ConvertResponseValidateTokenModel(err), err
+}
+
+func (s *GrpcEndpoint) CreateProfile(
+	context.Context, *proto.CreateProfileRequest,
+) (*proto.ProfileResponse, error) {
+	return nil, fmt.Errorf(methodNotImplemented)
+}
+
+func (s *GrpcEndpoint) DeleteProfile(
+	context.Context, *proto.DeleteProfileRequest,
+) (*proto.ProfileResponse, error) {
+	return nil, fmt.Errorf(methodNotImplemented)
+}
+
+func (s *GrpcEndpoint) GetProfile(
+	context.Context, *proto.GetProfileRequest,
+) (*proto.ProfileResponse, error) {
+	return nil, fmt.Errorf(methodNotImplemented)
+}
+
+func (s *GrpcEndpoint) UpdateProfile(
+	context.Context, *proto.UpdateProfileRequest,
+) (*proto.ProfileResponse, error) {
+	return nil, fmt.Errorf(methodNotImplemented)
 }
