@@ -19,7 +19,6 @@ type LoginPostgresResponseModel struct {
 	Email       string
 	Password    string
 	Role        string
-	ProfileId   uint64
 	IsValidated bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -43,7 +42,6 @@ func ConvertResponseLoginModel(
 		Id:           user.Id,
 		AccessToken:  ConvertTokensModel(&tokens.AccessToken),
 		RefreshToken: ConvertTokensModel(&tokens.RefreshToken),
-		ProfileId:    user.ProfileId,
 		IsValidated:  user.IsValidated,
 		Error:        "success",
 	}

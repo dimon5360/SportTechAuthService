@@ -5,13 +5,6 @@ import (
 	"log"
 )
 
-const (
-	configPath  = "../SportTechDockerConfig/"
-	serviceEnv  = ".env"
-	postgresEnv = configPath + "postgres.env"
-	redisEnv    = configPath + "redis.env"
-)
-
 func main() {
 
 	a := app.New()

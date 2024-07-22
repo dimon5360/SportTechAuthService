@@ -30,7 +30,7 @@ func (p *provider) Init() (service.Interface, error) {
 		return nil, err
 	}
 
-	fmt.Println("SportTech auth service v." + os.Getenv(serviceVersionKey))
+	fmt.Println("SportTech user service v." + os.Getenv(serviceVersionKey))
 	log.Println("provider initialized")
 
 	return p.initAuthService()
@@ -54,6 +54,6 @@ func (p *provider) initAuthService() (service.Interface, error) {
 		return nil, err
 	}
 
-	log.Println("auth service created")
+	log.Println("user service created")
 	return service, nil
 }

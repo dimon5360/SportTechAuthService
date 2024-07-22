@@ -6,14 +6,13 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	proto "proto/go"
 )
 
 const methodNotImplemented string = "method not implemented"
 
 type GrpcEndpoint struct {
-	proto.UnimplementedAuthServiceServer
+	proto.UnimplementedUserServiceServer
 
 	userReposoitory repository.UserRepositoryInterface
 	tokenRepository repository.TokenRepositoryInterface
@@ -43,13 +42,7 @@ func (s *GrpcEndpoint) LoginUser(
 		return nil, err
 	}
 
-	salt := os.Getenv("PASSWORD_HASH_SALT")
-	hash, err := HashPassword(req.Password, salt)
-	if err != nil {
-		return nil, err
-	}
-
-	if isValid := ValidatePassword(user.Password, hash); !isValid {
+	if isValid := repository.ValidatePassword(user.Password, req.Password); !isValid {
 		return nil, fmt.Errorf("invalid creadentials")
 	}
 
@@ -69,17 +62,12 @@ func (s *GrpcEndpoint) RegisterUser(
 ) (*proto.RegisterUserResponse, error) {
 
 	log.Println("user register request")
+
 	if s.userReposoitory == nil {
 		log.Fatal("user repository isn't initialized")
 	}
 
-	salt := os.Getenv("PASSWORD_HASH_SALT")
-	_, err := HashPassword(req.Password, salt)
-	if err != nil {
-		return nil, fmt.Errorf("hashing password failed")
-	}
-
-	_, err = s.userReposoitory.CreateUser(
+	_, err := s.userReposoitory.CreateUser(
 		models.ConvertRequestRegisterModel(req, models.UserRole))
 	if err != nil {
 		return nil, err
