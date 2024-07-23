@@ -3,7 +3,6 @@ package repository
 import (
 	"app/main/internal/dto/models"
 	"app/main/internal/repository"
-	"app/main/pkg/env"
 	"context"
 	"database/sql"
 	"fmt"
@@ -56,10 +55,6 @@ func testRepositoryConnection(cli *sql.DB) {
 }
 
 func (r *userRepository) Init() error {
-
-	if err := env.Load(os.Getenv(postgresConfigPathKey)); err != nil {
-		return err
-	}
 
 	opt := fmt.Sprintf("postgresql://%s:%s@%s/%s%s",
 		os.Getenv(postgresAdminKey),

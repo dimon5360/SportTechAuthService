@@ -61,8 +61,6 @@ func (s *GrpcEndpoint) RegisterUser(
 	ctx context.Context, req *proto.RegisterUserRequest,
 ) (*proto.RegisterUserResponse, error) {
 
-	log.Println("user register request")
-
 	if s.userReposoitory == nil {
 		log.Fatal("user repository isn't initialized")
 	}

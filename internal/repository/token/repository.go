@@ -3,7 +3,6 @@ package repository
 import (
 	"app/main/internal/dto/models"
 	"app/main/internal/repository"
-	"app/main/pkg/env"
 	"fmt"
 	"os"
 
@@ -11,8 +10,6 @@ import (
 )
 
 const (
-	redisConfigPathKey = "REDIS_CONFIG"
-
 	redisHostKey          = "REDIS_HOST"
 	redisAdminPasswordKey = "REDIS_ADMIN_PASSWORD"
 	redisDatabaseKey      = "REDIS_DATABASE"
@@ -29,10 +26,6 @@ func New() repository.TokenRepositoryInterface {
 }
 
 func (r *tokenRepository) Init() error {
-
-	if err := env.Load(os.Getenv(redisConfigPathKey)); err != nil {
-		return err
-	}
 
 	opt := redis.Options{
 		Addr:     os.Getenv(redisHostKey),
